@@ -6,11 +6,11 @@ import org.springframework.stereotype.Component;
 @Component
 public class AbcCoffeeMachine implements CoffeeMachine {
 
+    @Autowired
     private CapsuleCoffee capsuleCoffee;
 
-    @Autowired()
-    public AbcCoffeeMachine(CapsuleCoffee capsuleCoffee){
-        this.capsuleCoffee = capsuleCoffee;
+    public AbcCoffeeMachine(){
+        //this.capsuleCoffee = capsuleCoffee;
     }
 
     public void brew() {
