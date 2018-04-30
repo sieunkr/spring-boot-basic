@@ -1,11 +1,9 @@
 package spring.basic.aop.logger;
 
 import org.aspectj.lang.JoinPoint;
-import org.aspectj.lang.annotation.After;
-import org.aspectj.lang.annotation.AfterReturning;
-import org.aspectj.lang.annotation.Aspect;
-import org.aspectj.lang.annotation.Before;
+import org.aspectj.lang.annotation.*;
 import org.springframework.stereotype.Component;
+import spring.basic.aop.annotation.LogAspect;
 
 @Aspect
 @Component
@@ -34,4 +32,21 @@ public class LoggerAspect {
 
         System.out.println("Completed: " + joinPoint);
     }
+
+
+
+
+
+    @Pointcut("@annotation(spring.basic.aop.annotation.LogAspect)")
+    public void getLogAspect(){}
+
+    @Before("getLogAspect()")
+    public void initTarget(JoinPoint joinPoint){
+
+
+        System.out.println("어노테이션으로 체크");
+    }
+
+
+
 }
