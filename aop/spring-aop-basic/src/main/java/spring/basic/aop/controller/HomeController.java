@@ -30,6 +30,7 @@ public class HomeController {
 
 
     @PostMapping("/coffees")
+    @LogAspect
     public void createCoffee(){
 
         coffeeService.createCoffee();
