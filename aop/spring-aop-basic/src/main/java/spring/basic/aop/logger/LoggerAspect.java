@@ -25,6 +25,13 @@ public class LoggerAspect {
 
     @AfterReturning("execution(* spring..*Service.*(..))")
     public void logAfterReturn(JoinPoint joinPoint) {
+
+        //파라미터 확인
+        Object[] signatureArgs = joinPoint.getArgs();
+        for (Object signatureArg: signatureArgs) {
+            System.out.println("Arg: " + signatureArg);
+        }
+
         System.out.println("Completed: " + joinPoint);
     }
 }
