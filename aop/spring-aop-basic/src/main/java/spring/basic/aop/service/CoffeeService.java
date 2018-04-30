@@ -15,6 +15,11 @@ public class CoffeeService {
         return coffees;
     }
 
+    public Coffee findCoffee(String name){
+
+        return new Coffee("라떼", 1200, true);
+    }
+
 
     public void createCoffee(){
         System.out.println("새로운 Coffee 만들기");
