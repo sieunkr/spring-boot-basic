@@ -1,4 +1,4 @@
-# 1장. Bean 생성
+# 1. Bean 생성
 
 #### @Configuration 해당 클래스를 스프링 설정 클래스로 지정   
   
@@ -171,7 +171,7 @@ public Assembler(){
 
 
 
-#5. DI 주입 방법
+# 5. DI 주입 방법
 
 ## Overview
 Injection 방법에 대해서 정리하고, Field DI 를 자제해야 하는 이유 및 다른 주입 방법에 대해서 알아본다. 
