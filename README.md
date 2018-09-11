@@ -523,6 +523,98 @@ public @interface Service {
 
 
 
+## 3.3 예제 문제
+
+RestTemplate 를 사용하는 평범한 컴포넌트가 있다고 가정하자. 
+
+````java
+//RestTemplate 빈 설정
+@Configuration
+public class RestTemplateConfig {
+
+    @Bean
+    public RestTemplate firstRestTemplate() {
+        return new RestTemplate() {{
+            setRequestFactory(new HttpComponentsClientHttpRequestFactory(HttpClientBuilder
+                    .create()
+                    .setConnectionManager(new PoolingHttpClientConnectionManager() {{
+                        setDefaultMaxPerRoute(50);
+                        setMaxTotal(200);
+                    }}).build()));
+        }};
+    }
+}
+
+//컴포넌트
+@Component  
+public class RequestComponent {
+	@Autowired
+	private RestTemplate restTemplate;
+}
+````
+
+만약, 두개의 RestTemplate 를 사용하고, 용도에 맞게 RestComponent 에 RestTemplate 를 주입해줘야 하는 상황이 발생한다면, 어떻게 개선하면 좋을까? RestTemplate 를 외부에서 주입해줘야 한다.
+
+RequestComponent 클래스의 @Component 어노테이션을 제거한다. 이제 RequestComponent 는 @Bean 어노테이션으로 따로 설정해야 한다. 이때, 필요에 맞게 RestTemplate 를 주입해주면 된다. 
+
+
+````java
+@Configuration
+public class RequestComponentConfig {
+
+    @Bean
+    public RequestComponent firstRequestComponent(RestTemplate firstRestTemplate){
+        return new RequestComponent(firstRestTemplate);
+    }
+
+    @Bean
+    public RequestComponent secondRequestComponent(RestTemplate secondRestTemplate){
+        return new RequestComponent(secondRestTemplate);
+    }
+````
+
+컴포넌트를 사용하는 부분에서는 아래와 같이 사용하면 된다.
+
+````java
+@Autowired  
+@Qualifier("firstRequestComponent")  
+private RequestComponent requestComponent;
+````
+
+끝!
+
+## 3.4 리스트, 맵 주입
+
+CafeInterface 인터페이스를 구현하는, 두개의 컴포넌트 클래스가 있다고 가정하자. CoffeeComponent 와 BrunchComponent 이다. CafeInterface 인터페이스를 구현하는 모든 Bean 의 리스트를 가져올 수 있을까? 
+
+#### ApplicationContext 
+간단한 방법으로는, ApplicationContext 를 활용하면 되겠다. 
+아래와 같이 getBeansOfType 메서드를 사용하면 된다. 
+````java
+@Autowired  
+private ApplicationContext applicationContext;
+생략
+applicationContext.getBeansOfType(CafeInterface.class)...
+````
+
+#### List
+Bean 리스트만 가져오는 경우는 List< class type > 으로 리스트형으로 주입이 가능하다. 
+````java
+@Autowired  
+private List<CafeInterface> cafeInterfaceList;
+````
+
+
+#### Map
+Bean의 이름을 키로 주입받을수도 있다. Map< String, classType > 으로 맵 으로 주입이 가능하다. 
+
+````java
+//Bean 이름이 Key  
+@Autowired  
+private Map<String, CafeInterface> cafeInterfaceMap;
+````
+
+
 # 4. DI in 스프링 부트
 
 사실 스프링부트 환경에서는 지금까지의 소스는 불필요하게 작성된 것이다. 왜냐면, 굳이 스프링 컨테이너 초기화를 안해도 되기 때문이다. 아래 소스가 필요 없었다.
